@@ -1,11 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>제이쿼리 ajax (p.491)</title>
+
+    <script src="lib/jquery-3.6.1.js"></script>
+    <style>
+        .d-none {
+            display: none;
+        }
+
+        table,
+        th,
+        td {
+            border-collapse: collapse;
+        }
+        th,
+        td {
+            border-top: 1px solid;
+        }
+    </style>
 </head>
+
 <body>
     <h1>jquery Ajax(Asynchronous javascript and XML)</h1>
     <p>jquery에서 Ajax("에이잭스","아작스") 기능을 구현한 메소드들을 사용해서 서버로부터
@@ -37,5 +56,57 @@
         <label for="keyword">키워드</label>
         <input type="text" id="keyword" name="keyword">
     </form>
+
+    <h5>.load() 예제(p.493)</h5>
+    <button id="pro">요청(=a.k.a 결과)</button>
+    <hr />
+    <div id="load" class="d-none"></div>
+    <div id="result"></div>
+    <script>
+        $(function () {
+            //엘리먼트.load(url [,data] [,complete(responseText, textSatus, XMLHttpRequest)])
+            //요청 버튼을 클릭하면, #result에 TEXT, CSV, HTML, XML, JSON, [DB연동] 등의 데이터를 호출!
+            //p.494
+            $("#pro").click(function () {
+                $("#load").load("data/dataset.json", function (responseText, textSatus, XMLHttpRequest) {
+                    // JSON : JavaScript Object Notation [자바스크립 객체 표기법(설명)]
+                    // Object to String : JSON.stringify()  /  Serialization [직렬화]
+                    // String to Object : JSON.parse()      /  deSerialzation[역직렬화]
+                    let str = "<table id=\"member_list\"><caption align=\"center\">회원 리스트</caption>";
+                    const data = JSON.parse(responseText);
+                    
+                    /* javascript loop
+                    1) while(조건){반복; 증감식;} <-- 조건이 true일때만 반복
+                    2) do() while (조건) : 잘안쓰지만, 조건식이 거짓이어도 한번은 실행
+                    3) for , for ~ of , for ~ in, nested for
+                    */
+
+                    // 데이터셋[array index]["Object key"]
+                    str += "<tr><th>번호</th><th>이름</th><th>이메일</th><th>성별</th><th>접속ip</th></tr>";
+                    for (let i = 0; i < data.length; i++) {
+                        let $id = data[i]["id"];
+                        let $name = data[i]["first_name"] + " " + data[i]["last_name"];
+                        let $email = data[i]["email"];
+                        let $gender = data[i]["gender"];
+                        let $ip = data[i]["ip_address"];
+
+                       // console.log($id,$name);
+
+                        str += "<tr>";
+                        str += "<td>" + $id + "</td>";
+                        str += "<td>" + $name + "</td>";
+                        str += "<td>" + $email + "</td>";
+                        str += "<td>" + $gender + "</td>";
+                        str += "<td>" + $ip + "</td>";
+                        str += "</tr>";
+                        
+                    }
+                    str += "</table>"
+                    $("#result").html(str);
+                });
+            })
+        })
+    </script>
 </body>
+
 </html>
